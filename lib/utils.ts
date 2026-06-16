@@ -1,13 +1,54 @@
 import { Review } from "@/lib/types";
 
+const IST_TIME_ZONE = "Asia/Kolkata";
+const IST_OFFSET = "+05:30";
+
+function getISTParts(date = new Date()) {
+  const formatter = new Intl.DateTimeFormat("en-CA", {
+    timeZone: IST_TIME_ZONE,
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+    hourCycle: "h23",
+  });
+
+  const parts = formatter.formatToParts(date);
+  const read = (type: Intl.DateTimeFormatPartTypes) =>
+    parts.find((part) => part.type === type)?.value ?? "";
+
+  return {
+    year: read("year"),
+    month: read("month"),
+    day: read("day"),
+    hour: read("hour"),
+    minute: read("minute"),
+    second: read("second"),
+  };
+}
+
+export function formatISTTimestamp(date = new Date()) {
+  const { year, month, day, hour, minute, second } = getISTParts(date);
+  const milliseconds = String(date.getMilliseconds()).padStart(3, "0");
+  return `${year}-${month}-${day}T${hour}:${minute}:${second}.${milliseconds}${IST_OFFSET}`;
+}
+
 export function getMonthKey(date = new Date()) {
-  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}`;
+  const { year, month } = getISTParts(date);
+  return `${year}-${month}`;
 }
 
 export function averageReviewScore(review: Review) {
   return Number(
     ((review.outputQuality + review.attendance + review.teamwork) / 3).toFixed(1),
   );
+}
+
+export function getTimestampValue(timestamp: string) {
+  const parsed = new Date(timestamp).getTime();
+  return Number.isNaN(parsed) ? 0 : parsed;
 }
 
 export function fallbackTrendSummary(employeeName: string, reviews: Review[]) {

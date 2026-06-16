@@ -2,7 +2,7 @@ import "server-only";
 
 import { google } from "googleapis";
 import { Review, ReviewPayload } from "@/lib/types";
-import { getMonthKey } from "@/lib/utils";
+import { formatISTTimestamp, getMonthKey, getTimestampValue } from "@/lib/utils";
 
 const REVIEW_HEADERS = [
   "timestamp",
@@ -109,7 +109,8 @@ function mapRowToReview(row: string[]): Review {
 export async function appendReview(payload: ReviewPayload) {
   const sheets = getSheetsClient();
   const spreadsheetId = getEnv("GOOGLE_SHEET_ID");
-  const timestamp = new Date().toISOString();
+  const now = new Date();
+  const timestamp = formatISTTimestamp(now);
   const sheetTitle = await getPrimarySheetTitle(sheets, spreadsheetId);
   const sheetRange = `${sheetTitle}!A:I`;
 
@@ -123,7 +124,7 @@ export async function appendReview(payload: ReviewPayload) {
       values: [
         [
           timestamp,
-          getMonthKey(new Date(timestamp)),
+          getMonthKey(now),
           payload.employeeEmail,
           payload.employeeName,
           payload.managerEmail,
@@ -162,5 +163,5 @@ export async function getReviews(employeeEmail?: string) {
     ? dataRows.filter((review) => review.employeeEmail === employeeEmail)
     : dataRows;
 
-  return filtered.sort((a, b) => b.timestamp.localeCompare(a.timestamp));
+  return filtered.sort((a, b) => getTimestampValue(b.timestamp) - getTimestampValue(a.timestamp));
 }
