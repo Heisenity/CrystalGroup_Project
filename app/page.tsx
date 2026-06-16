@@ -112,6 +112,10 @@ function formatReviewDate(timestamp: string) {
   });
 }
 
+function formatReviewMonth(monthKey: string) {
+  return formatMonthLabel(monthKey);
+}
+
 function formatLabel(value: string) {
   return value
     .split(/[\s-]+/)
@@ -1762,7 +1766,7 @@ function TimelineList({
           transition={{ type: "spring", stiffness: 200, damping: 20 }}
         >
           <div className="timeline-head">
-            <strong>{formatReviewDate(review.timestamp)}</strong>
+            <strong>{formatReviewMonth(review.monthKey)}</strong>
             <span>{averageReviewScore(review)}/5</span>
           </div>
           <div className="timeline-tags">
@@ -1770,6 +1774,7 @@ function TimelineList({
             <Tag value={`Attendance ${review.attendance}`} />
             <Tag value={`Teamwork ${review.teamwork}`} />
           </div>
+          <div className="timeline-date-caption">{formatReviewDate(review.timestamp)}</div>
           <p>{review.comment}</p>
         </motion.div>
       ))}

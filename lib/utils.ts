@@ -17,7 +17,7 @@ export function fallbackTrendSummary(employeeName: string, reviews: Review[]) {
 
   const latest = reviews[0];
   const latestAverage = averageReviewScore(latest);
-  const previous = reviews[1];
+  const previous = reviews.find((review) => review.monthKey !== latest.monthKey);
   const previousAverage = previous ? averageReviewScore(previous) : null;
   const direction =
     previousAverage === null

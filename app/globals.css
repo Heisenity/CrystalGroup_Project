@@ -1219,6 +1219,12 @@ a {
   font-size: 1.08rem;
 }
 
+.timeline-date-caption {
+  margin-top: 10px;
+  color: var(--muted);
+  font-size: 0.82rem;
+}
+
 .movement-history-inline {
   display: flex;
   flex-wrap: wrap;

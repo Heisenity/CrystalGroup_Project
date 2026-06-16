@@ -82,6 +82,22 @@ type EmployeeSeries = {
   reviews: Review[];
 };
 
+function buildMonthlyTrend(reviews: Review[]) {
+  const grouped = new Map<string, { total: number; count: number }>();
+
+  for (const review of reviews.slice().reverse()) {
+    const current = grouped.get(review.monthKey) ?? { total: 0, count: 0 };
+    current.total += averageReviewScore(review);
+    current.count += 1;
+    grouped.set(review.monthKey, current);
+  }
+
+  return Array.from(grouped.entries()).map(([monthKey, value]) => ({
+    monthKey,
+    average: Number((value.total / value.count).toFixed(1)),
+  }));
+}
+
 export function groupReviewsByEmployee(reviews: Review[]): EmployeeSeries[] {
   const map = new Map<string, Review[]>();
 
@@ -262,16 +278,11 @@ function deriveWellbeingSignal(reviews: Review[]) {
 
 export function buildEmployeeInsight(reviews: Review[]): EmployeeInsight {
   const recent = reviews.slice(0, 6);
-  const trend = recent
-    .slice()
-    .reverse()
-    .map((review) => ({
-      monthKey: review.monthKey,
-      average: averageReviewScore(review),
-    }));
-
-  const latestAverage = recent[0] ? averageReviewScore(recent[0]) : null;
-  const previousAverage = recent[1] ? averageReviewScore(recent[1]) : latestAverage;
+  const trend = buildMonthlyTrend(recent);
+  const latestTrend = trend.at(-1) ?? null;
+  const previousTrend = trend.length > 1 ? trend.at(-2) ?? null : null;
+  const latestAverage = latestTrend?.average ?? null;
+  const previousAverage = previousTrend?.average ?? null;
   const growthDirection =
     latestAverage === null || previousAverage === null
       ? "steady"
