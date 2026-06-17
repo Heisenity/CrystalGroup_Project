@@ -1775,7 +1775,9 @@ function TimelineList({
             <Tag value={`Teamwork ${review.teamwork}`} />
           </div>
           <div className="timeline-date-caption">{formatReviewDate(review.timestamp)}</div>
-          <p>{review.comment}</p>
+          <div className="timeline-comment-scroll">
+            <p>{review.comment}</p>
+          </div>
         </motion.div>
       ))}
     </div>

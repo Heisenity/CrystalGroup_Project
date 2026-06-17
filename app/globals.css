@@ -1229,6 +1229,17 @@ a {
   font-size: 0.82rem;
 }
 
+.timeline-comment-scroll {
+  max-height: 168px;
+  overflow-y: auto;
+  margin-top: 10px;
+  padding-right: 6px;
+}
+
+.timeline-comment-scroll p {
+  margin: 0;
+}
+
 .movement-history-inline {
   display: flex;
   flex-wrap: wrap;
