@@ -861,9 +861,13 @@ a {
   font-family: "Avenir Next", "Segoe UI", "Helvetica Neue", sans-serif;
   font-size: clamp(2rem, 2.6vw, 2.9rem);
   font-weight: 700;
-  line-height: 1.05;
+  line-height: 1;
   letter-spacing: -0.03em;
-  white-space: nowrap;
+  white-space: normal;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  text-wrap: balance;
 }
 
 .signal-card-helper {
